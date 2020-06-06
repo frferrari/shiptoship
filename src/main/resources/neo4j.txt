@@ -1,0 +1,6 @@
+
+This is a script to load the Galveston dataset into Neo4j
+
+LOAD CSV WITH HEADERS FROM 'file:///home/francois/dev/projects/kpler/data/Galveston_2017_11_25-26.csv' AS row
+CREATE (:Event{id:toInteger(row.id),vesselId:toInteger(row.vessel_id),pos:point({latitude:toFloat(row.latitude), longitude:toFloat(row.longitude)}),eventTime:datetime({epochMillis:apoc.date.parse(row['received_time_utc'],'ms', 'yyyy-MM-dd HH:mm:ss')}),speed:toFloat(row.speed),course:toInteger(row.course),heading:toFloat(row.heading),draught:toFloat(row.draught),providerId:row.provider_id});
+
