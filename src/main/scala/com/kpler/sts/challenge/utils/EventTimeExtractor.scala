@@ -2,6 +2,8 @@ package com.kpler.sts.challenge.utils
 
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
+import java.time.{Instant, LocalDateTime, ZoneId, ZoneOffset, ZonedDateTime}
 
 import com.kpler.sts.challenge.EVENT_TIME_TIMESTAMP_FORMAT
 import com.kpler.sts.challenge.AIS_FIELD_SEPARATOR
@@ -24,7 +26,8 @@ class EventTimeExtractor extends TimestampExtractor {
 object EventTimeExtractor {
   def toTimestamp(ts: String, tsFormat: String = EVENT_TIME_TIMESTAMP_FORMAT): Option[Timestamp] =
     Try {
-      val dateFormat: SimpleDateFormat = new SimpleDateFormat(tsFormat)
-      Timestamp.from(dateFormat.parse(ts).toInstant)
+      val dtf: DateTimeFormatter = DateTimeFormatter.ofPattern(tsFormat).withZone(ZoneId.of("UTC"))
+      val zdt: ZonedDateTime = ZonedDateTime.parse(ts, dtf)
+      Timestamp.from(Instant.ofEpochSecond(zdt.toEpochSecond))
     }.toOption
 }

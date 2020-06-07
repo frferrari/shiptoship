@@ -1,4 +1,4 @@
-name := "KafkaStreamsSessionWindowScala"
+name := "ShipToShip"
 
 version := "0.1"
 
@@ -12,7 +12,8 @@ libraryDependencies ++= Seq(
   "org.slf4j" % "slf4j-log4j12" % "1.7.30",
   "io.argonaut" %% "argonaut" % "6.2.2",
   "org.scalactic" %% "scalactic" % "3.0.0",
-  "org.scalatest" %% "scalatest" % "3.0.4" % "test"
+  "org.scalatest" %% "scalatest" % "3.0.4" % "test",
+  "com.github.scopt" %% "scopt" % "3.7.1"
 )
 
 scalaVersion := "2.12.8"
