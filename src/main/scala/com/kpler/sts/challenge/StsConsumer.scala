@@ -72,7 +72,7 @@ object StsConsumer {
 
     // Aggregator
     val aisEventAggregator: AisEventAggregator =
-      new AisEventAggregator(stsConfig.maxSpeedKnot, stsConfig.maxDistanceMeter, stsConfig.headingGap, stsConfig.speedGap, stsConfig.timeGap)
+      new AisEventAggregator(stsConfig.maxSpeedKnot, stsConfig.maxDistanceMeter, stsConfig.headingGap, stsConfig.speedGap)
 
     val aggregator = (harborId: HarborId, aisEvent: AisEvent, stsDetector: AisEventAggregate) => {
       aisEventAggregator.aggregate(harborId, aisEvent, stsDetector)

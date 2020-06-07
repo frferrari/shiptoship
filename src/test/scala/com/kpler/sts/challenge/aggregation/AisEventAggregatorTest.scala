@@ -19,41 +19,6 @@ class AisEventAggregatorTest extends WordSpec with Matchers {
   val eventB: AisEvent = AisEvent(harborId, 300000000, 5399, 28.57775, -94.29173, now, 0, 172, 150, 21.2, 138, "T-AIS", "", "0")
 
   /**
-   * Similar Time Slot
-   */
-  "isSimilarTimeSlot" when {
-    "given 2 events close to each other in time" should {
-      "return true" in {
-        val instantNow: Instant = Instant.now()
-        val instantAfterNow = instantNow.plusSeconds(aisEventAggregator.timeGap - 5)
-        aisEventAggregator.isSimilarTimeSlot(eventA.copy(eventTime = Timestamp.from(instantNow)), eventB.copy(eventTime = Timestamp.from(instantAfterNow))) shouldBe true
-      }
-    }
-
-    "given 2 events close to each other in time (reversed)" should {
-      "return true" in {
-        val instantNow: Instant = Instant.now()
-        val instantAfterNow = instantNow.plusSeconds(aisEventAggregator.timeGap - 5)
-        aisEventAggregator.isSimilarTimeSlot(eventA.copy(eventTime = Timestamp.from(instantAfterNow)), eventB.copy(eventTime = Timestamp.from(instantNow))) shouldBe true
-      }
-    }
-
-    "given 2 events of the same time" should {
-      "return true" in {
-        aisEventAggregator.isSimilarTimeSlot(eventA.copy(eventTime = now), eventB.copy(eventTime = now)) shouldBe true
-      }
-    }
-
-    "given 2 events too far from each other in time" should {
-      "return false" in {
-        val instantNow: Instant = Instant.now()
-        val instantAfterNow = instantNow.plusSeconds(aisEventAggregator.timeGap + 5)
-        aisEventAggregator.isSimilarTimeSlot(eventA.copy(eventTime = Timestamp.from(instantNow)), eventB.copy(eventTime = Timestamp.from(instantAfterNow))) shouldBe false
-      }
-    }
-  }
-
-  /**
    * Similar Speed
    */
   "isSimilarSpeed" when {

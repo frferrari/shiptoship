@@ -8,8 +8,7 @@ import scala.collection.immutable
 case class AisEventAggregator(maxSpeedKnot: Double = 5.0,
                               maxDistanceMeter: Int = 100,
                               headingGap: Int = 5,
-                              speedGap: Double = 0.3,
-                              timeGap: Long = 300L) {
+                              speedGap: Double = 0.3) {
 
   private val AVERAGE_RADIUS_OF_EARTH_METER = 6371000
 
@@ -79,8 +78,7 @@ case class AisEventAggregator(maxSpeedKnot: Double = 5.0,
       isSimilarHeading(aisEventA, aisEventB) &&
       isSimilarSpeed(aisEventA, aisEventB) &&
       isBelowMaxSpeed(aisEventA) &&
-      isBelowMaxSpeed(aisEventB) &&
-      isSimilarTimeSlot(aisEventA, aisEventB)
+      isBelowMaxSpeed(aisEventB)
   }
 
   /**
@@ -123,17 +121,6 @@ case class AisEventAggregator(maxSpeedKnot: Double = 5.0,
    */
   def isSimilarSpeed(aisEventA: AisEvent, aisEventB: AisEvent): Boolean = {
     Math.abs(aisEventA.speed - aisEventB.speed) <= speedGap
-  }
-
-  /**
-   * Checks if 2 AIS events are close in time. How close the events are to each other depends on timeGap
-   *
-   * @param aisEventA
-   * @param aisEventB
-   * @return true if the 2 events are close in time, false otherwise
-   */
-  def isSimilarTimeSlot(aisEventA: AisEvent, aisEventB: AisEvent): Boolean = {
-    (Math.abs(aisEventA.eventTime.getTime - aisEventB.eventTime.getTime) / 1000) <= timeGap
   }
 
   /**
