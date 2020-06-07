@@ -33,22 +33,26 @@ case class AisEventAggregator(maxSpeedKnot: Double = 5.0,
 
   /**
    * Goes through all the provided events and identifies STS events
-   * This must be optimized
    *
    * @param aisEventsPerVessel
    * @return
    */
   def findSts(aisEventsPerVessel: Map[VesselId, List[AisEvent]]): List[(Sts, Sts)] = {
-    val closestEvents: immutable.Iterable[List[(Sts, Sts)]] =
-      for {
-        (vesselIdA, aisEventsA) <- aisEventsPerVessel
-        (vesselIdB, aisEventsB) <- aisEventsPerVessel.filterNot(_._1 == vesselIdA)
-      } yield findStsEvents(aisEventsA, aisEventsB)
+    val vesselCombinations: List[(VesselId, VesselId)] =
+      aisEventsPerVessel
+        .keys
+        .toList
+        .combinations(2)
+        .map {
+          case Seq(l, r) if l > r => (r, l)
+          case Seq(l, r) => (l, r)
+        }.toList
 
-    closestEvents
-      .flatten
-      .filter { case (l, r) => l.vesselId < r.vesselId }
-      .toList
+      (for {
+        (vesselIdA, vesselIdB) <- vesselCombinations
+        aisEventsA = aisEventsPerVessel(vesselIdA)
+        aisEventsB = aisEventsPerVessel(vesselIdB)
+      } yield findStsEvents(aisEventsA, aisEventsB)).flatten
   }
 
   /**

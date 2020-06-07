@@ -25,7 +25,7 @@ kafka-topics.sh --zookeeper 127.0.0.1:2181 --topic sts --create --partitions 1 -
 The command below allows to inject the full dataset in the input topic with a key being the harbor id (Galveston ...)
 
 ```
-ail +2 data/Galveston_2017_11_25-26.csv | awk '{ printf("120045806421:%s\n", $0) }' | kafka-console-producer.sh \
+tail +2 data/Galveston_2017_11_25-26.csv | awk '{ printf("120045806421:%s\n", $0) }' | kafka-console-producer.sh \
 --broker-list localhost:9092 \
 --topic ais \
 --property "parse.key=true" \
