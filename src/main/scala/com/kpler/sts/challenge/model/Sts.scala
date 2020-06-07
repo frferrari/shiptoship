@@ -17,11 +17,6 @@ case class Sts(harborId: HarborId,
                course: Course) {
   override def toString: String =
     s"<<vessel=${vesselId} sp=${speed} hd=${heading} co=${course} eid=${eventId} ets=${eventTime}>>"
-
-  override def equals(any: Any): Boolean = any match {
-    case that: Sts => this.harborId == that.harborId && this.eventId == that.eventId
-    case _ => false
-  }
 }
 
 object Sts {
