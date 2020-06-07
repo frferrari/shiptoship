@@ -4,7 +4,7 @@ import java.sql.Timestamp
 
 import argonaut.Argonaut._
 import argonaut.CodecJson
-import com.kpler.sts.challenge.StsConsumer.{EventId, EventTime, HarborId, Heading, Latitude, Longitude, Speed, VesselId}
+import com.kpler.sts.challenge.StsConsumer._
 
 case class Sts(harborId: HarborId,
                eventId: EventId,
@@ -13,9 +13,10 @@ case class Sts(harborId: HarborId,
                longitude: Longitude,
                eventTime: EventTime,
                speed: Speed,
-               heading: Heading) {
+               heading: Heading,
+               course: Course) {
   override def toString: String =
-    s"<<ID=${vesselId} SP=${speed} HD=${heading} E=${eventId} T=${eventTime}>>"
+    s"<<vessel=${vesselId} sp=${speed} hd=${heading} co=${course} eid=${eventId} ets=${eventTime}>>"
 
   override def equals(any: Any): Boolean = any match {
     case that: Sts => this.harborId == that.harborId && this.eventId == that.eventId
@@ -33,7 +34,8 @@ object Sts {
       aisEvent.longitude,
       aisEvent.eventTime,
       aisEvent.speed,
-      aisEvent.heading)
+      aisEvent.heading,
+      aisEvent.course)
   }
 
   implicit def EventTimeCodecJson: CodecJson[Timestamp] =
@@ -47,5 +49,5 @@ object Sts {
     )
 
   implicit def StsCodecJson: CodecJson[Sts] =
-    casecodec8(Sts.apply, Sts.unapply)("harborId", "eventId", "vesselId", "latitude", "longitude", "eventTime", "speed", "heading")
+    casecodec9(Sts.apply, Sts.unapply)("harborId", "eventId", "vesselId", "latitude", "longitude", "eventTime", "speed", "heading", "course")
 }

@@ -16,7 +16,7 @@ import org.apache.kafka.streams.scala.{Serdes, StreamsBuilder, kstream}
 import org.apache.kafka.streams.{KafkaStreams, StreamsConfig}
 import org.slf4j.{Logger, LoggerFactory}
 
-object StsConsumer extends App {
+object StsConsumer {
 
   type HarborId = String
   type EventId = Long
@@ -26,11 +26,11 @@ object StsConsumer extends App {
   type Longitude = Double
   type EventTime = Timestamp
   type Speed = Double
-  type Course = Int
+  type Course = Double
   type Heading = Int
   type Draught = Double
 
-  override def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit = {
     import com.kpler.sts.challenge.serdes.AisEventSerdes._
     import com.kpler.sts.challenge.serdes.StsEventKeySerdes._
     import com.kpler.sts.challenge.serdes.StsEventSerdes._
@@ -91,24 +91,6 @@ object StsConsumer extends App {
       .toStream
       .peek((k, v) => println(s"k=$k v=$v"))
       .to(stsConfig.outputTopic)(Produced.`with`(stsEventKeySerdes, stsEventSerdes))
-
-    /*
-    aisEvents
-      .flatMapValues((harborId, record) => AisEvent(harborId, record))
-      .groupByKey(kstream.Grouped.`with`(Serdes.Integer, aisEventSerdes))
-      .windowedBy(hoppingWindow)
-      .aggregate(AisEventAggregate())(aggregator)
-      .suppress(Suppressed.untilWindowCloses(BufferConfig.unbounded()))
-      .toStream
-      .flatMapValues(stsDetector => stsDetector.stsEvents.map(e => StsEvent(e._1, e._2)))
-      .peek((k, stsEvent) => s"k=$k stsEvent=$stsEvent (flatMapValues)")
-      .groupBy((wk, stsEvent) => wk.key() + "|" + stsEvent.sts1.eventId + "|" + stsEvent.sts2.eventId)(kstream.Grouped.`with`(Serdes.String, stsEventSerdes))
-      .reduce((l, r) => l)
-      .suppress()
-      .toStream
-      .peek((k, v) => s"k=$k v=$v")
-      .to(outputTopic)(Produced.`with`(Serdes.String, StsEventSerdes.stsEventSerdes))
-    */
 
     val streams = new KafkaStreams(builder.build(), props)
     streams.start()

@@ -7,7 +7,7 @@ import scala.collection.immutable
 
 case class AisEventAggregator(maxSpeedKnot: Double = 5.0,
                               maxDistanceMeter: Int = 100,
-                              headingGap: Double = 5.0,
+                              headingGap: Int = 5,
                               speedGap: Double = 0.3,
                               timeGap: Long = 300L) {
 
@@ -24,17 +24,17 @@ case class AisEventAggregator(maxSpeedKnot: Double = 5.0,
     val stsEvents: List[(Sts, Sts)] = findSts(aisEventsPerVessel)
 
     stsEvents
-      .zipWithIndex
-      .foreach { case ((stsA, stsB), idx) =>
+      .foreach { case (stsA, stsB) =>
         if (!newStsDetector.stsEvents.contains((stsA, stsB)))
-          println(s"STS($idx) detected between $stsA and $stsB")
+          println(s"STS detected between $stsA and $stsB")
       }
 
     newStsDetector.copy(stsEvents = newStsDetector.stsEvents ++ stsEvents)
   }
 
   /**
-   * Goes through all ther opvided events and identifies STS events
+   * Goes through all the provided events and identifies STS events
+   * This must be optimized
    *
    * @param aisEventsPerVessel
    * @return
@@ -87,7 +87,7 @@ case class AisEventAggregator(maxSpeedKnot: Double = 5.0,
    * Checks if the provided event has a speed that is lower than maxSpeedKnot parameter
    *
    * @param aisEvent
-   * @return true is the event has a speed lower than maxSpeedKnow, false otherwise
+   * @return true if the event has a speed lower than maxSpeedKnow, false otherwise
    */
   def isBelowMaxSpeed(aisEvent: AisEvent): Boolean =
     aisEvent.speed <= maxSpeedKnot
@@ -119,7 +119,7 @@ case class AisEventAggregator(maxSpeedKnot: Double = 5.0,
    *
    * @param aisEventA
    * @param aisEventB
-   * @return true is the 2 events are close in speed, false otherwise
+   * @return true if the 2 events are close in speed, false otherwise
    */
   def isSimilarSpeed(aisEventA: AisEvent, aisEventB: AisEvent): Boolean = {
     Math.abs(aisEventA.speed - aisEventB.speed) <= speedGap
@@ -130,7 +130,7 @@ case class AisEventAggregator(maxSpeedKnot: Double = 5.0,
    *
    * @param aisEventA
    * @param aisEventB
-   * @return true is the 2 events are close in time, false otherwise
+   * @return true if the 2 events are close in time, false otherwise
    */
   def isSimilarTimeSlot(aisEventA: AisEvent, aisEventB: AisEvent): Boolean = {
     (Math.abs(aisEventA.eventTime.getTime - aisEventB.eventTime.getTime) / 1000) <= timeGap

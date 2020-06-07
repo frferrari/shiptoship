@@ -19,7 +19,7 @@ class StsConfigParser {
       opt[Int]('d', "maxDistance").action((x, c) =>
         c.copy(maxDistanceMeter = x)).text("The maximum distance in meters of 2 vessels operating STS")
 
-      opt[Double]('h', "headingGap").action((x, c) =>
+      opt[Int]('h', "headingGap").action((x, c) =>
         c.copy(headingGap = x)).text("The maximum heading difference of 2 vessels operating STS")
 
       opt[Double]('g', "speedGap").action((x, c) =>
