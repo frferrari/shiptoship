@@ -19,3 +19,12 @@ libraryDependencies ++= Seq(
 scalaVersion := "2.12.8"
 
 logBuffered in Test := false
+
+assemblyMergeStrategy in assembly := {
+  case PathList("jackson-annotations-2.10.2.jar", xs @ _*) => MergeStrategy.last
+  case PathList("jackson-core-2.10.2.jar", xs @ _*) => MergeStrategy.last
+  case PathList("jackson-databind-2.10.2.jar", xs @ _*) => MergeStrategy.last
+  case PathList("jackson-datatype-jdk8-2.10.2.jar", xs @ _*) => MergeStrategy.last
+  case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+  case _ => MergeStrategy.first
+}
